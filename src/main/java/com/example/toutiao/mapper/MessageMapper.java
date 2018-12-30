@@ -9,7 +9,5 @@ public interface MessageMapper {
 
     int insertSelective(Message record);
 
-    List<Message> selectByExampleWithBLOBs(MessageExample example);
-
     List<Message> selectByExample(MessageExample example);
 }

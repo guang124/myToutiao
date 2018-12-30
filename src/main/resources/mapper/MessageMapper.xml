@@ -5,12 +5,10 @@
     <result column="id" jdbcType="INTEGER" property="id" />
     <result column="from_id" jdbcType="INTEGER" property="fromId" />
     <result column="to_id" jdbcType="INTEGER" property="toId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
     <result column="has_read" jdbcType="INTEGER" property="hasRead" />
     <result column="conversation_id" jdbcType="VARCHAR" property="conversationId" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.example.toutiao.pojo.Message">
-    <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -42,28 +40,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, from_id, to_id, created_date, has_read, conversation_id
+    id, from_id, to_id, content, created_date, has_read, conversation_id
   </sql>
-  <sql id="Blob_Column_List">
-    content
-  </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.example.toutiao.pojo.MessageExample" resultMap="ResultMapWithBLOBs">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    'false' as QUERYID,
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from message
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
   <select id="selectByExample" parameterType="com.example.toutiao.pojo.MessageExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -79,22 +57,28 @@
       order by ${orderByClause}
     </if>
   </select>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.toutiao.pojo.Message" useGeneratedKeys="true">
-    insert into message (from_id, to_id, created_date, 
-      has_read, conversation_id, content
-      )
-    values (#{fromId,jdbcType=INTEGER}, #{toId,jdbcType=INTEGER}, #{createdDate,jdbcType=TIMESTAMP}, 
-      #{hasRead,jdbcType=INTEGER}, #{conversationId,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}
-      )
+  <insert id="insert" parameterType="com.example.toutiao.pojo.Message">
+    insert into message (id, from_id, to_id, 
+      content, created_date, has_read, 
+      conversation_id)
+    values (#{id,jdbcType=INTEGER}, #{fromId,jdbcType=INTEGER}, #{toId,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{hasRead,jdbcType=INTEGER}, 
+      #{conversationId,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.toutiao.pojo.Message" useGeneratedKeys="true">
+  <insert id="insertSelective" parameterType="com.example.toutiao.pojo.Message">
     insert into message
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
       <if test="fromId != null">
         from_id,
       </if>
       <if test="toId != null">
         to_id,
+      </if>
+      <if test="content != null">
+        content,
       </if>
       <if test="createdDate != null">
         created_date,
@@ -105,16 +89,19 @@
       <if test="conversationId != null">
         conversation_id,
       </if>
-      <if test="content != null">
-        content,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
       <if test="fromId != null">
         #{fromId,jdbcType=INTEGER},
       </if>
       <if test="toId != null">
         #{toId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
       </if>
       <if test="createdDate != null">
         #{createdDate,jdbcType=TIMESTAMP},
@@ -124,9 +111,6 @@
       </if>
       <if test="conversationId != null">
         #{conversationId,jdbcType=VARCHAR},
-      </if>
-      <if test="content != null">
-        #{content,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>

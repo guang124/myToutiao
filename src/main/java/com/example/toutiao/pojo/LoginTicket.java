@@ -2,7 +2,7 @@ package com.example.toutiao.pojo;
 
 import java.util.Date;
 
-public class loginTicket {
+public class LoginTicket {
     private Integer id;
 
     private Integer userId;

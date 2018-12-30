@@ -9,7 +9,5 @@ public interface CommentMapper {
 
     int insertSelective(Comment record);
 
-    List<Comment> selectByExampleWithBLOBs(CommentExample example);
-
     List<Comment> selectByExample(CommentExample example);
 }

@@ -3,14 +3,12 @@
 <mapper namespace="com.example.toutiao.mapper.CommentMapper">
   <resultMap id="BaseResultMap" type="com.example.toutiao.pojo.Comment">
     <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="entity_id" jdbcType="INTEGER" property="entityId" />
     <result column="entity_type" jdbcType="INTEGER" property="entityType" />
     <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
     <result column="status" jdbcType="INTEGER" property="status" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.example.toutiao.pojo.Comment">
-    <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -42,28 +40,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, entity_id, entity_type, created_date, status
+    id, content, user_id, entity_id, entity_type, created_date, status
   </sql>
-  <sql id="Blob_Column_List">
-    content
-  </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.example.toutiao.pojo.CommentExample" resultMap="ResultMapWithBLOBs">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    'false' as QUERYID,
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from comment
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
   <select id="selectByExample" parameterType="com.example.toutiao.pojo.CommentExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -79,17 +57,23 @@
       order by ${orderByClause}
     </if>
   </select>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.example.toutiao.pojo.Comment" useGeneratedKeys="true">
-    insert into comment (user_id, entity_id, entity_type, 
-      created_date, status, content
-      )
-    values (#{userId,jdbcType=INTEGER}, #{entityId,jdbcType=INTEGER}, #{entityType,jdbcType=INTEGER}, 
-      #{createdDate,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}
-      )
+  <insert id="insert" parameterType="com.example.toutiao.pojo.Comment">
+    insert into comment (id, content, user_id, 
+      entity_id, entity_type, created_date, 
+      status)
+    values (#{id,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
+      #{entityId,jdbcType=INTEGER}, #{entityType,jdbcType=INTEGER}, #{createdDate,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.toutiao.pojo.Comment" useGeneratedKeys="true">
+  <insert id="insertSelective" parameterType="com.example.toutiao.pojo.Comment">
     insert into comment
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
       <if test="userId != null">
         user_id,
       </if>
@@ -105,11 +89,14 @@
       <if test="status != null">
         status,
       </if>
-      <if test="content != null">
-        content,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
       <if test="userId != null">
         #{userId,jdbcType=INTEGER},
       </if>
@@ -124,9 +111,6 @@
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
-      </if>
-      <if test="content != null">
-        #{content,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>

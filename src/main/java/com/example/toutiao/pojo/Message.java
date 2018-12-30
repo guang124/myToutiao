@@ -9,13 +9,13 @@ public class Message {
 
     private Integer toId;
 
+    private String content;
+
     private Date createdDate;
 
     private Integer hasRead;
 
     private String conversationId;
-
-    private String content;
 
     public Integer getId() {
         return id;
@@ -41,6 +41,14 @@ public class Message {
         this.toId = toId;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content == null ? null : content.trim();
+    }
+
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -63,13 +71,5 @@ public class Message {
 
     public void setConversationId(String conversationId) {
         this.conversationId = conversationId == null ? null : conversationId.trim();
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
     }
 }
