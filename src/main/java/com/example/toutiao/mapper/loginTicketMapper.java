@@ -1,13 +1,13 @@
 package com.example.toutiao.mapper;
 
-import com.example.toutiao.pojo.loginTicket;
-import com.example.toutiao.pojo.loginTicketExample;
+import com.example.toutiao.pojo.LoginTicket;
+import com.example.toutiao.pojo.LoginTicketExample;
 import java.util.List;
 
-public interface loginTicketMapper {
-    int insert(loginTicket record);
+public interface LoginTicketMapper {
+    int insert(LoginTicket record);
 
-    int insertSelective(loginTicket record);
+    int insertSelective(LoginTicket record);
 
-    List<loginTicket> selectByExample(loginTicketExample example);
+    List<LoginTicket> selectByExample(LoginTicketExample example);
 }
