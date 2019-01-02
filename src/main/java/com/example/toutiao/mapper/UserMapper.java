@@ -1,22 +1,15 @@
 package com.example.toutiao.mapper;
 
 import com.example.toutiao.pojo.User;
-import com.example.toutiao.pojo.UserExample;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 @Repository
 @Mapper
 public interface UserMapper {
     String TABLE_NAME = "user";
     String INSET_FIELDS = " name, password, salt, head_url ";
     String SELECT_FIELDS = " id, name, password, salt, head_url";
-    int insert(User record);
-
-    int insertSelective(User record);
-
-    List<User> selectByExample(UserExample example);
 
     @Insert({"insert into ", TABLE_NAME, "(", INSET_FIELDS,
             ") values (#{name},#{password},#{salt},#{headUrl})"})

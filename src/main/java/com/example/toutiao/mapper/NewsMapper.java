@@ -1,7 +1,6 @@
 package com.example.toutiao.mapper;
 
 import com.example.toutiao.pojo.News;
-import com.example.toutiao.pojo.NewsExample;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,11 +8,6 @@ import java.util.List;
 @Mapper
 @Repository
 public interface NewsMapper {
-    int insert(News record);
-
-    int insertSelective(News record);
-
-    List<News> selectByExample(NewsExample example);
 
     String TABLE_NAME = "news";
     String INSERT_FIELDS = " title, link, image, like_count, comment_count, created_date, user_id ";
