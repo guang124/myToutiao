@@ -1,10 +1,5 @@
 package com.example.toutiao.controller;
-import com.example.toutiao.aspect.LogAspect;
-import com.example.toutiao.mapper.LoginTicketMapper;
-import com.example.toutiao.pojo.LoginTicket;
-import com.example.toutiao.pojo.News;
-import com.example.toutiao.pojo.ViewObject;
-import com.example.toutiao.service.NewsService;
+
 import com.example.toutiao.service.UserService;
 import com.example.toutiao.util.ToutiaoUtil;
 import io.swagger.annotations.ApiOperation;
@@ -17,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Map;
 
 
@@ -27,7 +21,7 @@ public class loginController {
     @Autowired
     UserService userService;
 
-    private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
+    private static final Logger logger = LoggerFactory.getLogger(loginController.class);
 
     @ApiOperation(value="用户注册", notes="用户注册")
     @RequestMapping(path = {"/reg/"}, method = {RequestMethod.GET, RequestMethod.POST})
@@ -60,7 +54,8 @@ public class loginController {
     @ResponseBody
     public String login(Model model, @RequestParam("username") String username,
                         @RequestParam("password") String password,
-                        @RequestParam(value="rember", defaultValue = "0") int rememberme) {
+                        @RequestParam(value="rember", defaultValue = "0") int rememberme,
+                        HttpServletResponse response){
         try {
             Map<String, Object> map = userService.login(username, password);
             if (map.containsKey("ticket")) {
@@ -69,6 +64,7 @@ public class loginController {
                 if (rememberme > 0) {
                     cookie.setMaxAge(3600*24*5);
                 }
+                response.addCookie(cookie);
                 return ToutiaoUtil.getJSONString(0, "登录成功");
             } else {
                 return ToutiaoUtil.getJSONString(1, map);
