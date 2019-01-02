@@ -3,9 +3,11 @@ package com.example.toutiao.mapper;
 import com.example.toutiao.pojo.News;
 import com.example.toutiao.pojo.NewsExample;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Mapper
+@Repository
 public interface NewsMapper {
     int insert(News record);
 

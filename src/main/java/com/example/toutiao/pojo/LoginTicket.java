@@ -11,7 +11,7 @@ public class LoginTicket {
 
     private Date expired;
 
-    private Integer status;
+    private Integer status;//0有效1无效
 
     public Integer getId() {
         return id;

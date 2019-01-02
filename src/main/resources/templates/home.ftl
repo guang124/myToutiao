@@ -6,16 +6,17 @@
     <meta name="keywords" content="读《Web 全栈工程师的自我修养》">
     <meta name="description" content="阅读影浅分享的读《Web 全栈工程师的自我修养》，就在牛客网。">
 
-    <link rel="stylesheet" type="text/css" href="/styles/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/styles/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../styles/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../styles/font-awesome.min.css">
 
-    <link rel="stylesheet" media="all" href="/styles/style.css">
+    <link rel="stylesheet" media="all" href="../styles/style.css">
 
-    <script src="/scripts/hm.js"></script>
-    <script src="/scripts/detail.js"></script>
+    <script src="../scripts/hm.js"></script>
+    <script src="../scripts/detail.js"></script>
+        <script src="/scripts/main/site/home.js"></script>
 
-    <script type="text/javascript" src="/scripts/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/scripts/jquery.qrcode.min.js"></script>
+    <script type="text/javascript" src="../scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../scripts/jquery.qrcode.min.js"></script>
 </head>
 <body class="welcome_index">
 
@@ -38,10 +39,13 @@
             <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
 
                 <ul class="nav navbar-nav navbar-right">
-                    <li class=""><a href="http://nowcoder.com/explore">发现</a></li>
-
-                    <li><a href="http://nowcoder.com/signin">站内信</a></li>
-                    <li class=""><a href="http://nowcoder.com/about">登陆</a></li>
+                    <#if user??>
+                    <li class="js-share"><a href="javascript:void(0);">分享</a></li>
+                    <li class=""><a href="/msg/list">站内信</a></li>
+                    <li class=""><a href="/user/${user.id!}/">${user.name!}</a></li>
+                    <#else >
+                    <li class="js-login"><a href="javascript:void(0);">登陆</a></li>
+                    </#if>
                 </ul>
 
             </nav>
@@ -109,14 +113,21 @@
         <div class="container" id="daily">
             <div class="jscroll-inner">
                 <div class="daily">
-
+                    <#assign cur_date="" />
+                    <#list vos! as vo>
+                        <#assign createdDate>${vo.news.createdDate?string('yyyy-MM-dd')}</#assign>
+                        <#if (cur_date != createdDate)>
+                            <#if vo_index gt 0 >
+                             </div> <#-- 上一个要收尾 -->
+                            </#if>
+                            <#assign cur_date>${createdDate!}</#assign>
                     <h3 class="date">
                         <i class="fa icon-calendar"></i>
-                        <span>头条资讯 &nbsp; $date.format('yyyy-MM-dd', $vo.news.createdDate)</span>
+                        <span>头条资讯 &nbsp; ${createdDate!}</span>
                     </h3>
-
+                        </#if>
                     <div class="posts">
-                    <#list vos as vo>
+
                         <div class="post">
                             <div class="votebar">
                                 <button class="click-like up" aria-pressed="false" title="赞同"><i class="vote-arrow"></i><span class="count">${vo.news.likeCount!}</span></button>
@@ -158,12 +169,14 @@
 
                             <div class="subject-name">来自 <a href="/user/${vo.user.id!}/">${vo.user.name!}</a></div>
                         </div>
-                    </#list>
-                        <!--
-                        <div class="alert alert-warning subscribe-banner" role="alert">
-                          《头条八卦》，每日 Top 3 通过邮件发送给你。      <a class="btn btn-info btn-sm pull-right" href="http://nowcoder.com/account/settings">立即订阅</a>
-                        </div>
-                        -->
+                    <#--最后有个元素要收尾 -->
+                     <#if vo_has_next> </div> </#if>
+                 </#list>
+                     <!--
+                     <div class="alert alert-warning subscribe-banner" role="alert">
+                       《头条八卦》，每日 Top 3 通过邮件发送给你。      <a class="btn btn-info btn-sm pull-right" href="http://nowcoder.com/account/settings">立即订阅</a>
+                     </div>
+                     -->
                     </div>
                 </div>
             </div>

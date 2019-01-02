@@ -3,8 +3,10 @@ package com.example.toutiao.mapper;
 import com.example.toutiao.pojo.User;
 import com.example.toutiao.pojo.UserExample;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+@Repository
 @Mapper
 public interface UserMapper {
     String TABLE_NAME = "user";
