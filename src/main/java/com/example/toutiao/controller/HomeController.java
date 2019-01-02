@@ -15,7 +15,7 @@ import java.util.List;
 
 
 @Controller
-public class homeController {
+public class HomeController {
     @Autowired
     NewsService newsService;
     @Autowired

@@ -27,7 +27,7 @@ public class LogAspect {
         logger.info("before method: " + sb.toString());
     }
 
-    @After("execution(* com.example.toutiao.controller.homeController.*(..))")
+    @After("execution(* com.example.toutiao.controller.HomeController.*(..))")
     public void afterMethod(JoinPoint joinPoint) {
         logger.info("after method: ");
     }
