@@ -1,7 +1,7 @@
 package com.example.toutiao.controller;
 
-import com.example.toutiao.pojo.HostHolder;
-import com.example.toutiao.pojo.News;
+import com.example.toutiao.pojo.*;
+import com.example.toutiao.service.CommentService;
 import com.example.toutiao.service.NewsService;
 import com.example.toutiao.service.UserService;
 import com.example.toutiao.util.ToutiaoUtil;
@@ -10,17 +10,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class NewsController {
@@ -30,6 +31,9 @@ public class NewsController {
     UserService userService;
     @Autowired
     HostHolder hostHolder;
+    @Autowired
+    CommentService commentService;
+
     private static final Logger logger = LoggerFactory.getLogger(NewsController.class);
     @ApiOperation("解析图片，根据图片链接名返回二进制流")
     @RequestMapping(path = {"/image"}, method = {RequestMethod.GET})
@@ -60,7 +64,7 @@ public class NewsController {
             return ToutiaoUtil.getJSONString(1, "上传失败");
         }
     }
-
+    @ApiOperation("发布新资讯，即分享功能")
     @RequestMapping(path = {"/user/addNews/"}, method = {RequestMethod.POST})
     @ResponseBody
     public String addNews(@RequestParam("image") String image,
@@ -88,4 +92,48 @@ public class NewsController {
             return ToutiaoUtil.getJSONString(1, "发布失败");
         }
     }
+    @ApiOperation("资讯详情页")
+    @RequestMapping(path = {"/news/{newsId}"}, method = {RequestMethod.GET})
+    public String newsDetail(@PathVariable("newsId") int newsId, Model model) {
+        News news=newsService.getById(newsId);
+        if (!StringUtils.isEmpty(news)){
+            List<Comment> comments = commentService.getCommentByEntity(news.getId(), EntityType.ENTITY_NEWS);
+            List<ViewObject> commentVOs = new ArrayList<>();
+            for (Comment comment : comments) {
+                ViewObject commentVO = new ViewObject();
+                commentVO.set("comment", comment);
+                commentVO.set("user", userService.getUser(comment.getUserId()));
+                commentVOs.add(commentVO);
+            }
+            model.addAttribute("commentVOs",commentVOs);
+            model.addAttribute("news",news);
+        }
+
+        model.addAttribute("owner",userService.findUserById(newsId));
+        return "detail";
+    }
+    @ApiOperation("添加资讯下面的评论")
+    @RequestMapping(path = {"/addComment"}, method = {RequestMethod.POST})
+    public String addComment(@RequestParam("newsId") int newsId,
+                             @RequestParam("content") String content) {
+        try {
+            Comment comment = new Comment();
+            comment.setUserId(hostHolder.getUser().getId());
+            comment.setContent(content);
+            comment.setEntityType(EntityType.ENTITY_NEWS);
+            comment.setEntityId(newsId);
+            comment.setCreatedDate(new Date());
+            comment.setStatus(StatusType.VALID);
+            commentService.addComment(comment);
+
+            // 更新评论数量，以后用异步实现
+            int count = commentService.getCommentCount(comment.getEntityId(), comment.getEntityType());
+            newsService.updateCommentCount(comment.getEntityId(), count);
+
+        } catch (Exception e) {
+            logger.error("提交评论错误" + e.getMessage());
+        }
+        return "redirect:/news/" + String.valueOf(newsId);
+    }
+
 }
