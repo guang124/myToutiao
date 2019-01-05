@@ -1,8 +1,8 @@
 <footer>
     <div class="container">
         <p class="text-center">
-            <a href="/about">关于我们</a>
-            <a href="/download">头条客户端</a>
+            <a href="#">关于我们</a>
+            <a href="#">头条客户端</a>
         </p>
         <p class="text-center">© 2013-2018 头条八卦</p>
     </div>
