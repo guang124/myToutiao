@@ -2,6 +2,7 @@ package com.example.toutiao.controller;
 
 import com.example.toutiao.pojo.*;
 import com.example.toutiao.service.CommentService;
+import com.example.toutiao.service.LikeService;
 import com.example.toutiao.service.NewsService;
 import com.example.toutiao.service.UserService;
 import com.example.toutiao.util.ToutiaoUtil;
@@ -33,6 +34,9 @@ public class NewsController {
     HostHolder hostHolder;
     @Autowired
     CommentService commentService;
+    @Autowired
+    LikeService likeService;
+
 
     private static final Logger logger = LoggerFactory.getLogger(NewsController.class);
     @ApiOperation("解析图片，根据图片链接名返回二进制流")
@@ -98,13 +102,22 @@ public class NewsController {
         News news=newsService.getById(newsId);
         if (!StringUtils.isEmpty(news)){
             List<Comment> comments = commentService.getCommentByEntity(news.getId(), EntityType.ENTITY_NEWS);
+            int localUserId = hostHolder.getUser() != null ? hostHolder.getUser().getId() : 0;
             List<ViewObject> commentVOs = new ArrayList<>();
             for (Comment comment : comments) {
                 ViewObject commentVO = new ViewObject();
                 commentVO.set("comment", comment);
                 commentVO.set("user", userService.getUser(comment.getUserId()));
+
                 commentVOs.add(commentVO);
+
             }
+            if(news!=null){
+            if (localUserId != 0) {
+                model.addAttribute("like", likeService.getLikeStatus(localUserId, EntityType.ENTITY_NEWS, news.getId()));
+            } else {
+                model.addAttribute("like", 0);
+            }}
             model.addAttribute("commentVOs",commentVOs);
             model.addAttribute("news",news);
         }

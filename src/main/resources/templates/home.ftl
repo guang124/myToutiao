@@ -19,13 +19,21 @@
                         <i class="fa icon-calendar"></i>
                         <span>头条资讯 &nbsp; ${createdDate!}</span>
                     </h3>
-                        </#if>
+                        </#if >
                     <div class="posts">
 
                         <div class="post">
                             <div class="votebar">
-                                <button class="click-like up" aria-pressed="false" title="赞同"><i class="vote-arrow"></i><span class="count">${vo.news.likeCount!}</span></button>
-                                <button class="click-dislike down" aria-pressed="true" title="反对"><i class="vote-arrow"></i>
+                                <#if vo.like gt 0>
+                                    <button class="click-like up pressed" aria-pressed="false" title="赞同"><i class="vote-arrow"></i><span class="count">${vo.news.likeCount!}</span></button>
+                                <#else >
+                                    <button class="click-like up" aria-pressed="false" title="赞同"><i class="vote-arrow"></i><span class="count">${vo.news.likeCount!}</span></button>
+                                </#if>
+                        <#if vo.like lt 0>
+                                <button class="click-dislike down pressed" aria-pressed="true" title="反对"><i class="vote-arrow"></i>
+                        <#else >
+                            <button class="click-dislike down" aria-pressed="true" title="反对"><i class="vote-arrow"></i>
+                        </#if>
                                 </button>
                             </div>
                             <div class="content" data-url="/news/${vo.news.id!}">
