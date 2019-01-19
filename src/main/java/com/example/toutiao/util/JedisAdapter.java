@@ -108,6 +108,8 @@ public class JedisAdapter implements InitializingBean {
             }
         }
     }
+
+
     //获取数量
     public long scard(String key) {
         Jedis jedis = null;
